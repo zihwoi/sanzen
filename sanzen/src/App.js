@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Dashboard from './components/Dashboard';
 import AddTransaction from './pages/AddTransaction';
+import Navigation from './components/Navigation';
 
 function App() {
   const [expenses, setExpenses] = useState([]);
@@ -18,7 +19,7 @@ function App() {
   return (
     <Router>
       <div className="app">
-        {/* Navigation */}
+        <Navigation />
         <nav className="nav">
           <ul>
             <li><Link to="/">Home</Link></li>
@@ -31,23 +32,23 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route 
-              path="/dashboard" 
+            <Route
+              path="/dashboard"
               element={
-                <Dashboard 
-                  totalIncome={totalIncome} 
-                  totalExpenses={totalExpenses} 
+                <Dashboard
+                  totalIncome={totalIncome}
+                  totalExpenses={totalExpenses}
                 />
-              } 
+              }
             />
-            <Route 
-              path="/add-transaction" 
+            <Route
+              path="/add-transaction"
               element={
-                <AddTransaction 
-                  addIncome={addIncome} 
-                  addExpense={addExpense} 
+                <AddTransaction
+                  addIncome={addIncome}
+                  addExpense={addExpense}
                 />
-              } 
+              }
             />
           </Routes>
         </main>
