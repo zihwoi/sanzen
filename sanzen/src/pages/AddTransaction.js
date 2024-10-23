@@ -1,5 +1,6 @@
 // src/pages/AddTransaction.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { GlobalContext } from '../context/GlobalState';
 import styled from 'styled-components';
 
 const FormContainer = styled.div`
@@ -38,19 +39,31 @@ const Button = styled.button`
   }
 `;
 
-const AddTransaction = ({ addIncome, addExpense }) => {
+const AddTransaction = () => {
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
-  const [type, setType] = useState('expense'); // Default to expense
+  const [type, setType] = useState('income');
+
+  // Access global state functions to add income or expense
+  const { addIncome, addExpense } = useContext(GlobalContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const transaction = { amount: parseFloat(amount), category };
+
+    const transaction = {
+      id: Math.floor(Math.random() * 1000000), // Generate a random ID for each transaction
+      amount: parseFloat(amount), // Ensure the amount is a number
+      category,
+    };
+
+    // Add transaction to the appropriate global state (income or expense)
     if (type === 'income') {
       addIncome(transaction);
     } else {
       addExpense(transaction);
     }
+
+    // Clear form after submission
     setAmount('');
     setCategory('');
   };
