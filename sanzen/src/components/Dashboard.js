@@ -1,6 +1,6 @@
-// src/components/Dashboard.js
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { GlobalContext } from '../context/GlobalState'; // Import GlobalContext
 
 const DashboardContainer = styled.div`
   max-width: 800px;
@@ -16,7 +16,13 @@ const Card = styled.div`
   margin: 10px 0;
 `;
 
-const Dashboard = ({ totalIncome, totalExpenses }) => {
+const Dashboard = () => {
+  const { incomes, expenses } = useContext(GlobalContext); // Access global incomes and expenses
+
+  // Calculate totals
+  const totalIncome = incomes.reduce((total, income) => total + income.amount, 0);
+  const totalExpenses = expenses.reduce((total, expense) => total + expense.amount, 0);
+
   return (
     <DashboardContainer>
       <h2 style={{ textAlign: 'center' }}>Dashboard</h2>
