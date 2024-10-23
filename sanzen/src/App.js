@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Dashboard from './components/Dashboard';
 import AddTransaction from './pages/AddTransaction';
 import Navigation from './components/Navigation';
+import { GlobalProvider } from './context/GlobalState';
 
 function App() {
   const [expenses, setExpenses] = useState([]);
@@ -17,6 +18,7 @@ function App() {
   const addIncome = (income) => setIncomes([...incomes, income]);
 
   return (
+    <GlobalProvider> 
     <Router>
       <div className="app">
         <Navigation />
@@ -54,6 +56,7 @@ function App() {
         </main>
       </div>
     </Router>
+    </GlobalProvider>
   );
 }
 
