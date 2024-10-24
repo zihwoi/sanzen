@@ -1,11 +1,9 @@
-// GlobalState.js
 import React, { createContext, useReducer, useEffect } from 'react';
-import AppReducer from './AppReducer'; // Corrected the import of AppReducer
+import AppReducer from './AppReducer';
 
 // Initial state
 const initialState = {
-    incomes: JSON.parse(localStorage.getItem('incomes')) || [],
-    expenses: JSON.parse(localStorage.getItem('expenses')) || [],
+    transactions: JSON.parse(localStorage.getItem('transactions')) || [], // Unified transactions
     budget: JSON.parse(localStorage.getItem('budget')) || { totalIncome: 0, totalExpenses: 0, budgetGoal: 0 }
 };
 
@@ -18,23 +16,15 @@ export const GlobalProvider = ({ children }) => {
 
     // Use effect to save state to localStorage on every state change
     useEffect(() => {
-        localStorage.setItem('incomes', JSON.stringify(state.incomes));
-        localStorage.setItem('expenses', JSON.stringify(state.expenses));
+        localStorage.setItem('transactions', JSON.stringify(state.transactions));
         localStorage.setItem('budget', JSON.stringify(state.budget));
     }, [state]);
 
     // Actions
-    const addIncome = (income) => {
+    const addTransaction = (transaction) => {
         dispatch({
-            type: 'ADD_INCOME',
-            payload: income,
-        });
-    };
-
-    const addExpense = (expense) => {
-        dispatch({
-            type: 'ADD_EXPENSE',
-            payload: expense,
+            type: 'ADD_TRANSACTION',
+            payload: transaction,
         });
     };
 
@@ -48,11 +38,9 @@ export const GlobalProvider = ({ children }) => {
     return (
         <GlobalContext.Provider
             value={{
-                incomes: state.incomes,
-                expenses: state.expenses,
+                transactions: state.transactions,
                 budget: state.budget,
-                addIncome,
-                addExpense,
+                addTransaction,
                 setBudgetGoal,
             }}
         >
