@@ -6,6 +6,8 @@ import Dashboard from './components/Dashboard';
 import AddTransaction from './pages/AddTransaction';
 import Navigation from './components/Navigation';
 import { GlobalProvider } from './context/GlobalState';
+import BudgetOverview from './components/BudgetOverview'; // Adjust the path as necessary
+
 
 function App() {
   const [expenses, setExpenses] = useState([]);
@@ -18,44 +20,47 @@ function App() {
   const addIncome = (income) => setIncomes([...incomes, income]);
 
   return (
-    <GlobalProvider> 
-    <Router>
-      <div className="app">
-        <Navigation />
-        <nav className="nav">
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/dashboard">Dashboard</Link></li>
-            <li><Link to="/add-transaction">Add Transaction</Link></li>
-          </ul>
-        </nav>
+    <GlobalProvider>
+      <Router>
+        <div className="app">
+          <Navigation />
+          <nav className="nav">
+            <ul>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/dashboard">Dashboard</Link></li>
+              <li><Link to="/add-transaction">Add Transaction</Link></li>
+              <li><Link to="/budget-overview">Budget Overview</Link></li>
 
-        {/* Main Content */}
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/dashboard"
-              element={
-                <Dashboard
-                  totalIncome={totalIncome}
-                  totalExpenses={totalExpenses}
-                />
-              }
-            />
-            <Route
-              path="/add-transaction"
-              element={
-                <AddTransaction
-                  addIncome={addIncome}
-                  addExpense={addExpense}
-                />
-              }
-            />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+            </ul>
+          </nav>
+
+          {/* Main Content */}
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <Dashboard
+                    totalIncome={totalIncome}
+                    totalExpenses={totalExpenses}
+                  />
+                }
+              />
+              <Route
+                path="/add-transaction"
+                element={
+                  <AddTransaction
+                    addIncome={addIncome}
+                    addExpense={addExpense}
+                  />
+                }
+              />
+              <Route path="/budget-overview" element={<BudgetOverview />} /> {/* Add the new route */}
+            </Routes>
+          </main>
+        </div>
+      </Router>
     </GlobalProvider>
   );
 }

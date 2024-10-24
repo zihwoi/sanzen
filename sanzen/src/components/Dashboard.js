@@ -1,11 +1,14 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';  // For navigation
 import { GlobalContext } from '../context/GlobalState';
-import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer, Legend } from 'recharts';
 import IncomeForm from './IncomeForm';
 import CustomDropdown from './Dropdown';
-
-const COLORS = ['#003f5c', '#58508d', '#bc5090', '#ff6361', '#ffa600'];
+import IncomeBreakdown from './IncomeBreakdown';
+import ExpenseBreakdown from './ExpenseBreakdown';
+import MonthlyExpensesBreakdown from './MonthlyExpensesBreakdown';
+import IncomeVsExpenses from './IncomeVsExpenses';
+import BudgetVsActual from './BudgetVsActual';
 
 const DashboardContainer = styled.div`
   max-width: 800px;
@@ -30,6 +33,26 @@ const ChartContainer = styled.div`
 `;
 
 const Dashboard = () => {
+  const expensesByCategory = [
+    { category: 'Food', amount: 500 },
+    { category: 'Rent', amount: 1200 },
+    { category: 'Transport', amount: 300 },
+    { category: 'Entertainment', amount: 200 },
+  ];
+
+  const incomeVsExpenses = [
+    { month: 'January', income: 4000, expenses: 3500 },
+    { month: 'February', income: 4200, expenses: 3800 },
+    { month: 'March', income: 4500, expenses: 4100 },
+  ];
+
+  const budgetVsActualData = [
+    { category: 'Food', budget: 600, actual: 500 },
+    { category: 'Rent', budget: 1200, actual: 1200 },
+    { category: 'Transport', budget: 300, actual: 350 },
+    { category: 'Entertainment', budget: 200, actual: 250 },
+  ];
+
   const { budget, transactions } = useContext(GlobalContext);
   const [selectedChart, setSelectedChart] = useState('expenses'); // Default to expenses chart
 
@@ -60,6 +83,9 @@ const Dashboard = () => {
   const options = [
     { value: 'expenses', label: 'Expenses Breakdown' },
     { value: 'income', label: 'Income Breakdown' },
+    { value: 'monthly-expenses', label: 'Monthly Expenses Breakdown' },
+    { value: 'income-vs-expenses', label: 'Income vs. Expenses' },
+    { value: 'budget-vs-actual', label: 'Budget vs. Actual' }
   ];
 
   return (
@@ -81,38 +107,49 @@ const Dashboard = () => {
       <IncomeForm /> {/* Render the IncomeForm here */}
 
       {/* Custom Dropdown for chart selection */}
-      <CustomDropdown 
-        options={options} 
-        selectedValue={selectedChart} 
-        onChange={setSelectedChart} 
+      <CustomDropdown
+        options={options}
+        selectedValue={selectedChart}
+        onChange={setSelectedChart}
       />
 
-      {/* Chart Container */}
       <ChartContainer>
         <h3 style={{ textAlign: 'center' }}>
-          {selectedChart === 'expenses' ? 'Expenses Breakdown by Category' : 'Income Breakdown by Category'}
+          {selectedChart === 'expenses' ? 'Expenses Breakdown by Category' :
+            selectedChart === 'income' ? 'Income Breakdown by Category' :
+              selectedChart === 'monthly-expenses' ? 'Monthly Expenses Breakdown by Category' :
+                selectedChart === 'income-vs-expenses' ? 'Income vs. Expenses Over Time' :
+                  'Budget vs. Actual'}
         </h3>
-        <ResponsiveContainer width="100%" height={400}>
-          <PieChart>
-            <Pie
-              data={selectedChart === 'expenses' ? expenseData : incomeData}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={120}
-              label={({ name, value }) => `${name}: $${value} (${((value / (selectedChart === 'expenses' ? totalExpenses : totalIncome)) * 100).toFixed(1)}%)`}
-              labelLine={false}
-            >
-              {(selectedChart === 'expenses' ? expenseData : incomeData).map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip formatter={(value) => [`$${value}`, selectedChart === 'expenses' ? 'Expenses' : 'Income']} />
-            <Legend verticalAlign="bottom" height={36} />
-          </PieChart>
-        </ResponsiveContainer>
+
+        {/* Conditionally render the charts */}
+        {selectedChart === 'expenses' && (
+          <ExpenseBreakdown expenseData={expenseData} totalExpenses={totalExpenses} />
+        )}
+
+        {selectedChart === 'income' && (
+          <IncomeBreakdown incomeData={incomeData} totalIncome={totalIncome} />
+        )}
+
+        {selectedChart === 'monthly-expenses' && (
+          <MonthlyExpensesBreakdown data={expensesByCategory} />
+        )}
+
+        {selectedChart === 'income-vs-expenses' && (
+          <IncomeVsExpenses data={incomeVsExpenses} />
+        )}
+
+        {selectedChart === 'budget-vs-actual' && (
+          <BudgetVsActual data={budgetVsActualData} />
+        )}
       </ChartContainer>
+
+      {/* Link to Budget Overview page */}
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <Link to="/budget-overview">
+          <button>View Budget Overview</button>
+        </Link>
+      </div>
     </DashboardContainer>
   );
 };

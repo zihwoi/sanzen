@@ -28,6 +28,7 @@ const Navigation = () => {
       <NavLink to="/">Home</NavLink>
       <NavLink to="/dashboard">Dashboard</NavLink>
       <NavLink to="/add-transaction">Add Transaction</NavLink>
+      <NavLink to="/budget-overview">Budget Overview</NavLink>
     </Nav>
   );
 };
