@@ -17,22 +17,18 @@ const Card = styled.div`
 `;
 
 const Dashboard = () => {
-  const { incomes, expenses } = useContext(GlobalContext); // Access global incomes and expenses
-
-  // Calculate totals
-  const totalIncome = incomes.reduce((total, income) => total + income.amount, 0);
-  const totalExpenses = expenses.reduce((total, expense) => total + expense.amount, 0);
+  const { budget } = useContext(GlobalContext); // Get budget data from context
 
   return (
     <DashboardContainer>
       <h2 style={{ textAlign: 'center' }}>Dashboard</h2>
       <Card type="income">
         <h3>Total Income</h3>
-        <p>${totalIncome}</p>
+        <p>${budget.totalIncome}</p>
       </Card>
       <Card type="expense">
         <h3>Total Expenses</h3>
-        <p>${totalExpenses}</p>
+        <p>${budget.totalExpenses}</p>
       </Card>
     </DashboardContainer>
   );
