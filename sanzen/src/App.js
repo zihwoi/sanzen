@@ -7,6 +7,7 @@ import AddTransaction from './pages/AddTransaction';
 import Navigation from './components/Navigation';
 import { GlobalProvider } from './context/GlobalState';
 import BudgetOverview from './components/BudgetOverview'; // Adjust the path as necessary
+import './App.css'; // Import global CSS here
 
 
 function App() {

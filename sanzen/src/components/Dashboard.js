@@ -93,13 +93,13 @@ const Dashboard = () => {
       <h2 style={{ textAlign: 'center' }}>Dashboard</h2>
 
       {/* Total Income Card */}
-      <Card type="income">
+      <Card className="card income">
         <h3>Total Income</h3>
         <p>${budget.totalIncome}</p>
       </Card>
 
       {/* Total Expenses Card */}
-      <Card type="expense">
+      <Card className="card expense">
         <h3>Total Expenses</h3>
         <p>${budget.totalExpenses}</p>
       </Card>
@@ -113,7 +113,7 @@ const Dashboard = () => {
         onChange={setSelectedChart}
       />
 
-      <ChartContainer>
+      <ChartContainer  className="chart-container">
         <h3 style={{ textAlign: 'center' }}>
           {selectedChart === 'expenses' ? 'Expenses Breakdown by Category' :
             selectedChart === 'income' ? 'Income Breakdown by Category' :

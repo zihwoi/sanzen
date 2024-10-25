@@ -1,3 +1,4 @@
+/* Global App Styling */
 .app {
   padding: 20px;
 }
@@ -59,6 +60,49 @@ button:hover {
   background-color: #0056b3;
 }
 
+/* Chart container styles */
+.chart-container {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f4f4f4; /* Background color for chart container */
+  border-radius: 10px;
+}
+
+/* Individual chart styles */
+.chart {
+  background-color: white; /* Background color for the charts */
+  border: 1px solid #ddd; /* Border around each chart */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding inside the chart */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Chart titles */
+.chart-title {
+  font-size: 1.2rem; /* Larger font for titles */
+  margin-bottom: 10px; /* Space below the title */
+  text-align: center; /* Center title text */
+}
+
+/* Dashboard specific styles */
+.card {
+  border-radius: 10px;
+  padding: 20px;
+  color: white;
+  margin: 10px 0;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+/* Card types */
+.card.income {
+  background-color: #4caf50; /* Income color */
+}
+
+.card.expense {
+  background-color: #f44336; /* Expense color */
+}
+
 .App {
   text-align: center;
 }
@@ -95,5 +139,21 @@ button:hover {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .nav {
+    flex-direction: column; /* Stack nav items vertically on small screens */
+  }
+
+  .nav li {
+    margin: 10px 0; /* Add margin for vertical spacing */
+  }
+
+  /* Adjust chart styles for smaller screens */
+  .chart {
+    padding: 15px; /* Adjust padding on smaller screens */
   }
 }
