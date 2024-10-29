@@ -1,0 +1,24 @@
+/* src/pages/NotFound.css */
+.not-found {
+    text-align: center;
+    padding: 50px;
+}
+
+.not-found h1 {
+    font-size: 3em;
+    color: #ff4747; /* Customize your color */
+}
+
+.not-found p {
+    font-size: 1.5em;
+    margin: 20px 0;
+}
+
+.not-found a {
+    color: #007bff; /* Link color */
+    text-decoration: underline;
+}
+
+.not-found a:hover {
+    text-decoration: none; /* Remove underline on hover */
+}
