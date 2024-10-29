@@ -1,36 +1,34 @@
-const appReducer = (state, action) => {
+const AppReducer = (state, action) => {
     switch (action.type) {
         case 'ADD_TRANSACTION':
-            const updatedTransactions = [...state.transactions, action.payload];
-
-            // Calculate total income and expenses
-            const totalIncome = updatedTransactions
-                .filter(transaction => transaction.type === 'income')
-                .reduce((acc, income) => acc + income.amount, 0);
-
-            const totalExpenses = updatedTransactions
-                .filter(transaction => transaction.type === 'expense')
-                .reduce((acc, expense) => acc + expense.amount, 0);
+            return {
+                ...state,
+                transactions: [...state.transactions, action.payload],
+            };
+        case 'UPDATE_BUDGET':
+            const { type, amount } = action.payload;
+            const updatedIncome = type === 'income' ? state.budget.totalIncome + amount : state.budget.totalIncome;
+            const updatedExpenses = type === 'expense' ? state.budget.totalExpenses + amount : state.budget.totalExpenses;
 
             return {
                 ...state,
-                transactions: updatedTransactions,
                 budget: {
                     ...state.budget,
-                    totalIncome,
-                    totalExpenses
-                }
+                    totalIncome: updatedIncome,
+                    totalExpenses: updatedExpenses,
+                },
             };
-
         case 'SET_BUDGET_GOAL':
             return {
                 ...state,
-                budget: { ...state.budget, budgetGoal: action.payload }
+                budget: {
+                    ...state.budget,
+                    budgetGoal: action.payload,
+                },
             };
-
         default:
             return state;
     }
 };
 
-export default appReducer;
+export default AppReducer;

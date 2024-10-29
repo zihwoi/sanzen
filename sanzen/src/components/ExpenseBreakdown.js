@@ -1,7 +1,19 @@
 import React from 'react';
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer, Legend } from 'recharts';
 
-const COLORS = ['#003f5c', '#58508d', '#bc5090', '#ff6361', '#ffa600'];
+const COLORS = [
+  '#ce4a4a', // Coral Red
+  '#eaaf41', // Sunflower Yellow
+  '#48a56a', // Olive Green
+  '#6688c3', // Sky Blue
+  '#903169', // Purple
+  '#c77986', // Hot Pink
+  '#E7CEB5', // Light Salmon
+  '#CCAE7F',  // Chocolate
+  '#925077', // Purple
+  '#68224B', // Hot Pink
+];
+
 
 const ExpenseBreakdown = ({ expenseData, totalExpenses }) => (
   <ResponsiveContainer width="100%" height={400}>

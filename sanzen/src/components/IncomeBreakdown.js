@@ -15,7 +15,7 @@ const IncomeBreakdown = ({ incomeData, totalIncome }) => (
         labelLine={false}
       >
         {incomeData.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={['#003f5c', '#58508d', '#bc5090', '#ff6361', '#ffa600'][index % 5]} />
+          <Cell key={`cell-${index}`} fill={['#003f5c', '#58508d', '#bc5090', '#ff6361', '#ffa600', '#48a56a', '#A7DB9B', '#FFF3CD'][index % 8]} />
         ))}
       </Pie>
       <Tooltip formatter={(value) => [`$${value}`, 'Income']} />

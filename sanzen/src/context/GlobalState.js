@@ -3,7 +3,7 @@ import AppReducer from './AppReducer';
 
 // Initial state
 const initialState = {
-    transactions: JSON.parse(localStorage.getItem('transactions')) || [], // Unified transactions
+    transactions: JSON.parse(localStorage.getItem('transactions')) || [],
     budget: JSON.parse(localStorage.getItem('budget')) || { totalIncome: 0, totalExpenses: 0, budgetGoal: 0 }
 };
 
@@ -26,6 +26,19 @@ export const GlobalProvider = ({ children }) => {
             type: 'ADD_TRANSACTION',
             payload: transaction,
         });
+
+        // Update budget based on transaction type
+        if (transaction.type === 'expense') {
+            dispatch({
+                type: 'UPDATE_EXPENSES',
+                payload: transaction.amount,
+            });
+        } else if (transaction.type === 'income') {
+            dispatch({
+                type: 'UPDATE_INCOME',
+                payload: transaction.amount,
+            });
+        }
     };
 
     const setBudgetGoal = (goal) => {

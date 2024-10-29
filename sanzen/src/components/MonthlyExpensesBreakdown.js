@@ -2,7 +2,7 @@ import React from 'react';
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer, Legend } from 'recharts';
 
 // Colors for the pie chart slices
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF'];
+const COLORS = ['#F33A6A', '#800080','#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF'];
 
 const MonthlyExpensesBreakdown = ({ data }) => {
   return (
