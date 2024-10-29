@@ -9,6 +9,8 @@ import NotFound from './pages/NotFound'; // Optional
 import RegisterPage from './components/RegisterPage'; // Import RegisterPage
 import LoginPage from './components/LoginPage'; // Import LoginPage
 import './App.css'; // Import global CSS here
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
               <Route path="/login" element={<LoginPage />} /> {/* Login Route */}
               <Route path="*" element={<NotFound />} /> {/* Optional */}
             </Routes>
+            <ToastContainer /> 
           </main>
         </div>
       </Router>

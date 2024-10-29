@@ -1,7 +1,7 @@
 // src/pages/Home.js
 import React from 'react';
 import styled from 'styled-components';
-import AuthComponent from '../components/AuthComponent'; // Import AuthComponent
+// import AuthComponent from '../components/AuthComponent'; // Import AuthComponent
 
 const HomeContainer = styled.div`
   display: flex;
@@ -46,7 +46,7 @@ const Home = () => {
       <h1>Welcome to Sanzen!</h1>
       <p>Your personal finance manager.</p>
        {/* Render AuthComponent for login/register */}
-       <AuthComponent />
+       {/* <AuthComponent /> */}
       <HomeButton href="/add-transaction">Get Started</HomeButton>
       <HomeButton href="/login">Login</HomeButton> {/* Link to Login */}
       <HomeButton href="/register">Register</HomeButton> {/* Link to Register */}
