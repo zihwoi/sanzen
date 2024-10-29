@@ -6,6 +6,8 @@ node_modules/
 # testing
 coverage/
 
+/src/firebase.js
+
 # production
 build/
 
@@ -19,3 +21,5 @@ yarn-error.log*
 # IDE specific
 .idea/
 .vscode/
+sanzen/src/firebase.js
+sanzen/src/firebase/firebase.js
