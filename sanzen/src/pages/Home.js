@@ -48,6 +48,8 @@ const Home = () => {
        {/* Render AuthComponent for login/register */}
        <AuthComponent />
       <HomeButton href="/add-transaction">Get Started</HomeButton>
+      <HomeButton href="/login">Login</HomeButton> {/* Link to Login */}
+      <HomeButton href="/register">Register</HomeButton> {/* Link to Register */}
     </HomeContainer>
   );
 };

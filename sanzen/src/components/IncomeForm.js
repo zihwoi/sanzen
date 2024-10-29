@@ -80,9 +80,16 @@ const IncomeForm = () => {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('Income'); // New state for category
-
+  const [successMessage, setSuccessMessage] = useState(''); // Add successMessage state here
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    //prevent negative values
+    if (parseFloat(amount) <= 0) {
+      alert("Please enter a positive amount.");
+      return;
+  }
 
     // Add the transaction (either Income or Expense) through the global state action
     const newTransaction = {
@@ -91,17 +98,24 @@ const IncomeForm = () => {
       type: category === 'Income' ? 'income' : 'expense', // Set type based on category
     };
 
+    
     addTransaction(newTransaction); // Add transaction to global state
+    
+    setSuccessMessage("Transaction added successfully!"); // Set success message
 
     // Clear the form
     setDescription('');
     setAmount('');
     setCategory('Income');
+    setTimeout(() => setSuccessMessage(''), 3000); // Hide message after 3 seconds
   };
 
   return (
     <FormContainer onSubmit={handleSubmit}>
       <FormTitle>Add Transaction</FormTitle> {/* Updated title for clarity */}
+
+      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>} {/* Display success message */}
+
       {/* Align fields horizontally */}
       <InputRow>
         <InputField

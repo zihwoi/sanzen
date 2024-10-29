@@ -1,8 +1,9 @@
-// src/components/AuthComponent.js
+// src/components/LoginPage.js
 import React, { useState } from 'react';
-import { register, login, logout } from '../firebase/authService'; // Adjust the import as per your authService setup
+import { login } from '../firebase/authService';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
-const AuthComponent = () => {
+const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -14,44 +15,31 @@ const AuthComponent = () => {
         try {
             await login(email, password);
             console.log("User logged in successfully");
+            // Redirect or show success message
         } catch (error) {
             console.error("Login error:", error);
-            setError(error.message); // Update the error state
+            setError(error.message);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleRegister = async () => {
-        setLoading(true);
-        setError(null);
+    const handleGoogleSignIn = async () => {
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
         try {
-            await register(email, password);
-            console.log("User registered successfully");
+            const result = await signInWithPopup(auth, provider);
+            console.log("User signed in with Google:", result.user);
+            // Optionally, redirect or show success message
         } catch (error) {
-            console.error("Registration error:", error);
-            setError(error.message); // Update the error state
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleLogout = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            await logout();
-            console.log("User logged out successfully");
-        } catch (error) {
-            console.error("Logout error:", error);
-            setError(error.message); // Update the error state
-        } finally {
-            setLoading(false);
+            console.error("Google sign-in error:", error.message);
+            setError(error.message);
         }
     };
 
     return (
         <div>
+            <h2>Login</h2>
             <input 
                 type="email"
                 value={email}
@@ -64,20 +52,15 @@ const AuthComponent = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
             />
-            <button onClick={handleRegister} disabled={loading}>
-                {loading ? "Registering..." : "Register"}
-            </button>
             <button onClick={handleLogin} disabled={loading}>
                 {loading ? "Logging in..." : "Login"}
             </button>
-            <button onClick={handleLogout} disabled={loading}>
-                {loading ? "Logging out..." : "Logout"}
+            <button onClick={handleGoogleSignIn} disabled={loading}>
+                Sign in with Google
             </button>
             {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
     );
 };
 
-
-
-export default AuthComponent;
+export default LoginPage;

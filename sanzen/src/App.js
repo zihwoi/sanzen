@@ -6,6 +6,8 @@ import AddTransaction from './pages/AddTransaction';
 import { GlobalProvider } from './context/GlobalState';
 import BudgetOverview from './components/BudgetOverview';
 import NotFound from './pages/NotFound'; // Optional
+import RegisterPage from './components/RegisterPage'; // Import RegisterPage
+import LoginPage from './components/LoginPage'; // Import LoginPage
 import './App.css'; // Import global CSS here
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
               <li><Link to="/dashboard">Dashboard</Link></li>
               <li><Link to="/add-transaction">Add Transaction</Link></li>
               <li><Link to="/budget-overview">Budget Overview</Link></li>
+              <li><Link to="/register">Register</Link></li> {/* Link to Register */}
+              <li><Link to="/login">Login</Link></li> {/* Link to Login */}
             </ul>
           </nav>
 
@@ -29,6 +33,8 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/add-transaction" element={<AddTransaction />} />
               <Route path="/budget-overview" element={<BudgetOverview />} />
+              <Route path="/register" element={<RegisterPage />} /> {/* Register Route */}
+              <Route path="/login" element={<LoginPage />} /> {/* Login Route */}
               <Route path="*" element={<NotFound />} /> {/* Optional */}
             </Routes>
           </main>
