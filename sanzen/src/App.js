@@ -39,6 +39,9 @@ function App() {
               <Route path="/login" element={<LoginPage />} /> {/* Login Route */}
               <Route path="*" element={<NotFound />} /> {/* Optional */}
             </Routes>
+
+            {/* <ExampleComponent /> */}
+            
             <ToastContainer /> 
           </main>
         </div>

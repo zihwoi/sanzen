@@ -3,9 +3,7 @@ import React, { useState } from 'react';
 import { register } from '../firebase/authService';
 import { db } from '../firebase/firebase';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore'; 
-import { toast } from 'react-toastify'; 
-import 'react-toastify/dist/ReactToastify.css'; 
+import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
@@ -15,11 +13,17 @@ const RegisterPage = () => {
     const [lastName, setLastName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
     const navigate = useNavigate();
 
     const handleRegister = async () => {
+        if (!email || !password || !firstName || !lastName) {
+            setError("Please fill in all fields.");
+            return;
+        }
         setLoading(true);
         setError(null);
+        setSuccessMessage(null);
         try {
             const userCredential = await register(email, password);
             const user = userCredential.user;
@@ -32,21 +36,21 @@ const RegisterPage = () => {
                 uid: user.uid
             });
 
-            toast.success("Registration successful! Please log in.");
-            // Clear fields after registration
+            setSuccessMessage("Registration successful! Please log in.");
+            // setTimeout(() => navigate("/login"), 2000);
+
             setEmail('');
             setPassword('');
             setFirstName('');
             setLastName('');
-            navigate("/login");
+            // navigate("/login");
         } catch (error) {
             console.error("Registration error:", error);
             if (error.code === 'auth/email-already-in-use') {
                 setError("This email address is already in use. Please try logging in.");
             } else {
-                setError(error.message);
+                setError(`Registration failed: ${error.message}`);
             }
-            toast.error(`Registration failed: ${error.message}`);
         } finally {
             setLoading(false);
         }
@@ -55,6 +59,8 @@ const RegisterPage = () => {
     const handleGoogleRegister = async () => {
         const auth = getAuth();
         const provider = new GoogleAuthProvider();
+        setError(null);
+        setSuccessMessage(null);
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
@@ -62,56 +68,99 @@ const RegisterPage = () => {
             // Store user data in Firestore using displayName for Google users
             await setDoc(doc(db, 'users', user.uid), {
                 email: user.email,
-                firstName: user.displayName.split(' ')[0], // Assuming displayName is "First Last"
-                lastName: user.displayName.split(' ')[1] || "", // Handle case of only first name
+                firstName: user.displayName.split(' ')[0],
+                lastName: user.displayName.split(' ')[1] || "",
                 uid: user.uid
             });
 
-            toast.success("Google registration successful!"); 
-            navigate("/dashboard");
+            setSuccessMessage("Google registration successful!");
+            setTimeout(() => {
+                navigate("/dashboard");
+            }, 2000);
         } catch (error) {
             console.error("Google registration error:", error);
-            setError(error.message);
-            toast.error(`Google registration failed: ${error.message}`);
+            setError("Google registration failed. Please try again.");
         }
     };
 
     return (
-        <div>
-            <h2>Register</h2>
-            <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="First Name"
-            />
-            <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Last Name"
-            />
-            <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-            />
-            <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-            />
-            <button onClick={handleRegister} disabled={loading}>
-                {loading ? "Registering..." : "Register"}
-            </button>
-            <button onClick={handleGoogleRegister} disabled={loading}>
-                Register with Google
-            </button>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div className="container my-5">
+            <div className="row justify-content-center">
+                <div className="col-md-6 col-lg-4">
+                    <div className="card">
+                        <div className="card-body">
+                            <h2 className="card-title mb-4">Register</h2>
+
+                            {/* Success Alert */}
+                            {successMessage && (
+                                <div className="alert alert-success" role="alert">
+                                    {successMessage}
+                                </div>
+                            )}
+
+                            {/* Error Alert */}
+                            {error && (
+                                <div className="alert alert-danger" role="alert">
+                                    {error}
+                                </div>
+                            )}
+
+                            <form onSubmit={(e) => { e.preventDefault(); handleRegister(); }}>
+                                <div className="mb-3">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        placeholder="First Name"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        placeholder="Last Name"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Email"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Password"
+                                    />
+                                </div>
+                                <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+                                    {loading ? "Registering..." : "Register"}
+                                </button>
+                            </form>
+                            <hr />
+                            <button
+                                className="btn btn-outline-secondary w-100"
+                                onClick={handleGoogleRegister}
+                                disabled={loading}
+                            >
+                                Register with Google
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
+
 };
 
 export default RegisterPage;
