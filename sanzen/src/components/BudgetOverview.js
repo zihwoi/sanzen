@@ -1,7 +1,8 @@
+// src/components/BudgetOverview.js
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { GlobalContext } from '../context/GlobalState';
-import BudgetVsActual from './BudgetVsActual'; // The bar chart for Budget vs Actual
+import BudgetVsActual from './BudgetVsActual'; // Bar chart component
 
 const BudgetOverviewContainer = styled.div`
   max-width: 800px;
@@ -14,25 +15,25 @@ const BudgetOverviewContainer = styled.div`
 const BudgetOverview = () => {
   const { budget, transactions } = useContext(GlobalContext);
 
-  // Group transactions by category
+  // Group expenses by category
   const expensesByCategory = transactions
     .filter(transaction => transaction.type === 'expense')
-    .reduce((acc, curr) => {
-      acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
+    .reduce((acc, transaction) => {
+      acc[transaction.category] = (acc[transaction.category] || 0) + transaction.amount;
       return acc;
     }, {});
 
-  // Prepare the data for the Budget vs Actual chart
+  // Build data for Budget vs Actual chart
   const budgetVsActualData = Object.keys(budget).map(category => ({
     category,
-    budget: budget[category],
-    actual: expensesByCategory[category] || 0
+    budget: budget[category], // Get budget amount for each category
+    actual: expensesByCategory[category] || 0, // Get actual expenses per category
   }));
 
   return (
     <BudgetOverviewContainer>
       <h2 style={{ textAlign: 'center' }}>Budget Overview</h2>
-      <BudgetVsActual data={budgetVsActualData} /> {/* Render Budget vs Actual chart */}
+      <BudgetVsActual data={budgetVsActualData} /> {/* Render bar chart */}
     </BudgetOverviewContainer>
   );
 };

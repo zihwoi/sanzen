@@ -1,12 +1,48 @@
-import React, { createContext, useReducer, useEffect, useState } from 'react';
-import AppReducer from './AppReducer';
-import { auth } from '../firebase/firebase'; // Firebase auth import
+// src/context/GlobalState.js
+import React, { createContext, useReducer, useEffect } from 'react';
+import { auth } from '../firebase/firebase';
 
 // Initial state
 const initialState = {
     transactions: JSON.parse(localStorage.getItem('transactions')) || [],
-    budget: JSON.parse(localStorage.getItem('budget')) || { totalIncome: 0, totalExpenses: 0, budgetGoal: 0 },
-    user: null, // Add user state to the initial state
+    budget: JSON.parse(localStorage.getItem('budget')) || {
+        Housing: 1300,
+        Food: 500,
+        Transportation: 200,
+        Entertainment: 250,
+    },
+    user: null,
+};
+
+// Reducer function
+const AppReducer = (state, action) => {
+    switch (action.type) {
+        case 'SET_USER':
+            return {
+                ...state,
+                user: action.payload,
+            };
+        case 'REMOVE_USER':
+            return {
+                ...state,
+                user: null,
+            };
+        case 'ADD_TRANSACTION':
+            return {
+                ...state,
+                transactions: [...state.transactions, action.payload],
+            };
+        case 'SET_BUDGET_GOAL':
+            return {
+                ...state,
+                budget: {
+                    ...state.budget,
+                    [action.payload.category]: action.payload.goal,
+                },
+            };
+        default:
+            return state;
+    }
 };
 
 // Create context
@@ -15,55 +51,37 @@ export const GlobalContext = createContext(initialState);
 // Provider component
 export const GlobalProvider = ({ children }) => {
     const [state, dispatch] = useReducer(AppReducer, initialState);
-    const [user, setUser] = useState(null); // Local user state
 
-    // Use effect to save state to localStorage on every state change
+    // Persist transactions and budget to local storage
     useEffect(() => {
         localStorage.setItem('transactions', JSON.stringify(state.transactions));
         localStorage.setItem('budget', JSON.stringify(state.budget));
-    }, [state]);
+    }, [state.transactions, state.budget]);
 
-    // Use effect to monitor user authentication state
+    // Listen for auth changes and update user state
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-            setUser(currentUser); // Set the user state based on auth status
+            if (currentUser) {
+                dispatch({ type: 'SET_USER', payload: currentUser });
+            } else {
+                dispatch({ type: 'REMOVE_USER' });
+            }
         });
-        return () => unsubscribe(); // Clean up subscription on unmount
+        return () => unsubscribe();
     }, []);
 
     // Actions
     const addTransaction = (transaction) => {
-        dispatch({
-            type: 'ADD_TRANSACTION',
-            payload: transaction,
-        });
-
-        // Update budget based on transaction type
-        if (transaction.type === 'expense') {
-            dispatch({
-                type: 'UPDATE_EXPENSES',
-                payload: transaction.amount,
-            });
-        } else if (transaction.type === 'income') {
-            dispatch({
-                type: 'UPDATE_INCOME',
-                payload: transaction.amount,
-            });
-        }
+        dispatch({ type: 'ADD_TRANSACTION', payload: transaction });
     };
 
-    const setBudgetGoal = (goal) => {
-        dispatch({
-            type: 'SET_BUDGET_GOAL',
-            payload: goal,
-        });
+    const setBudgetGoal = (category, goal) => {
+        dispatch({ type: 'SET_BUDGET_GOAL', payload: { category, goal } });
     };
 
-    // Logout function
-    const logout = () => {
-        auth.signOut().then(() => {
-            setUser(null); // Reset user state after logout
-        });
+    const logout = async () => {
+        await auth.signOut();
+        dispatch({ type: 'REMOVE_USER' });
     };
 
     return (
@@ -71,17 +89,13 @@ export const GlobalProvider = ({ children }) => {
             value={{
                 transactions: state.transactions,
                 budget: state.budget,
-                user, // Provide user state to context
-                setUser, // Include setUser to update user info
+                user: state.user,
                 addTransaction,
                 setBudgetGoal,
-                logout, // Include logout function
+                logout,
             }}
         >
             {children}
         </GlobalContext.Provider>
     );
-
-
-
 };
