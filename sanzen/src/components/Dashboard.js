@@ -2,13 +2,14 @@ import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';  // For navigation
 import { GlobalContext } from '../context/GlobalState';
-import IncomeForm from './IncomeForm';
 import CustomDropdown from './Dropdown';
 import IncomeBreakdown from './IncomeBreakdown';
 import ExpenseBreakdown from './ExpenseBreakdown';
 import MonthlyExpensesBreakdown from './MonthlyExpensesBreakdown';
 import IncomeVsExpenses from './IncomeVsExpenses';
 import BudgetVsActual from './BudgetVsActual';
+import TransactionForm from './TransactionForm';
+import CollapsibleTransactionList from './CollapsibleTransactionList'; // Adjust the path as necessary
 
 const DashboardContainer = styled.div`
   max-width: 800px;
@@ -16,13 +17,33 @@ const DashboardContainer = styled.div`
   padding: 20px;
 `;
 
-const Card = styled.div`
+const Card = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isOpen'].includes(prop) // Prevent 'isOpen' from being forwarded
+})`
   background-color: ${(props) => (props.type === 'income' ? '#4caf50' : '#f44336')};
   color: white;
   padding: 20px;
   border-radius: 10px;
   margin: 10px 0;
   text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  h3 {
+    color: white;
+    margin: 0;
+  }
+
+  p {
+    color: white;
+    font-size: 2rem;
+    font-weight: normal;
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
 `;
 
 const ChartContainer = styled.div`
@@ -33,26 +54,6 @@ const ChartContainer = styled.div`
 `;
 
 const Dashboard = () => {
-  const expensesByCategory = [
-    { category: 'Food', amount: 500 },
-    { category: 'Rent', amount: 1200 },
-    { category: 'Transport', amount: 300 },
-    { category: 'Entertainment', amount: 200 },
-  ];
-
-  const incomeVsExpenses = [
-    { month: 'January', income: 4000, expenses: 3500 },
-    { month: 'February', income: 4200, expenses: 3800 },
-    { month: 'March', income: 4500, expenses: 4100 },
-  ];
-
-  const budgetVsActualData = [
-    { category: 'Food', budget: 600, actual: 500 },
-    { category: 'Rent', budget: 1200, actual: 1200 },
-    { category: 'Transport', budget: 300, actual: 350 },
-    { category: 'Entertainment', budget: 200, actual: 250 },
-  ];
-
   const { budget, transactions } = useContext(GlobalContext);
   const [selectedChart, setSelectedChart] = useState('expenses'); // Default to expenses chart
 
@@ -90,21 +91,23 @@ const Dashboard = () => {
 
   return (
     <DashboardContainer>
-      <h2 style={{ textAlign: 'center' }}>Dashboard</h2>
+      <h2 className="bold-text" style={{ textAlign: 'center' }}>Dashboard</h2>
 
       {/* Total Income Card */}
-      <Card className="card income">
-        <h3>Total Income</h3>
-        <p>${budget.totalIncome}</p>
+      <Card type="income"> {/* Removed isOpen here, use only type */}
+        <h3 className="bold-text">Total Income</h3>
+        <p>${totalIncome.toFixed(2)}</p>
       </Card>
 
       {/* Total Expenses Card */}
-      <Card className="card expense">
-        <h3>Total Expenses</h3>
-        <p>${budget.totalExpenses}</p>
+      <Card type="expense"> {/* Removed isOpen here, use only type */}
+        <h3 className="bold-text">Total Expenses</h3>
+        <p>${totalExpenses.toFixed(2)}</p>
       </Card>
 
-      <IncomeForm /> {/* Render the IncomeForm here */}
+      <TransactionForm />
+
+      <CollapsibleTransactionList />
 
       {/* Custom Dropdown for chart selection */}
       <CustomDropdown
@@ -113,7 +116,7 @@ const Dashboard = () => {
         onChange={setSelectedChart}
       />
 
-      <ChartContainer  className="chart-container">
+      <ChartContainer className="chart-container">
         <h3 style={{ textAlign: 'center' }}>
           {selectedChart === 'expenses' ? 'Expenses Breakdown by Category' :
             selectedChart === 'income' ? 'Income Breakdown by Category' :
@@ -132,15 +135,15 @@ const Dashboard = () => {
         )}
 
         {selectedChart === 'monthly-expenses' && (
-          <MonthlyExpensesBreakdown data={expensesByCategory} />
+          <MonthlyExpensesBreakdown data={budget.expensesByCategory} />
         )}
 
         {selectedChart === 'income-vs-expenses' && (
-          <IncomeVsExpenses data={incomeVsExpenses} />
+          <IncomeVsExpenses data={budget.incomeVsExpenses} />
         )}
 
         {selectedChart === 'budget-vs-actual' && (
-          <BudgetVsActual data={budgetVsActualData} />
+          <BudgetVsActual data={budget.budgetVsActualData} />
         )}
       </ChartContainer>
 
@@ -150,6 +153,7 @@ const Dashboard = () => {
           <button>View Budget Overview</button>
         </Link>
       </div>
+
     </DashboardContainer>
   );
 };

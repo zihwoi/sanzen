@@ -2,17 +2,29 @@
 import React, { createContext, useReducer, useEffect } from 'react';
 import { auth } from '../firebase/firebase';
 
-// Initial state
+// Utility function to safely parse JSON
+const safeParse = (key, defaultValue) => {
+    const item = localStorage.getItem(key);
+    try {
+        return item ? JSON.parse(item) : defaultValue;
+    } catch (error) {
+        console.error(`Error parsing JSON for ${key}:`, error);
+        return defaultValue; // Return default if parsing fails
+    }
+};
+
+// Updated initial state using safeParse
 const initialState = {
-    transactions: JSON.parse(localStorage.getItem('transactions')) || [],
-    budget: JSON.parse(localStorage.getItem('budget')) || {
-        Housing: 1300,
-        Food: 500,
-        Transportation: 200,
-        Entertainment: 250,
-    },
+    transactions: safeParse('transactions', []),
+    budget: safeParse('budget', {
+        expensesByCategory: {},
+        totalIncome: 0,
+        totalExpenses: 0,
+    }),
+    actualExpenses: safeParse('actualExpenses', {}),
     user: null,
 };
+
 
 // Reducer function
 const AppReducer = (state, action) => {
@@ -40,6 +52,15 @@ const AppReducer = (state, action) => {
                     [action.payload.category]: action.payload.goal,
                 },
             };
+        case 'UPDATE_ACTUAL_EXPENSES':
+            const newActualExpenses = {
+                ...state.actualExpenses,
+                [action.payload.category]: (state.actualExpenses[action.payload.category] || 0) + action.payload.amount,
+            };
+            return {
+                ...state,
+                actualExpenses: newActualExpenses,
+            };
         default:
             return state;
     }
@@ -56,7 +77,8 @@ export const GlobalProvider = ({ children }) => {
     useEffect(() => {
         localStorage.setItem('transactions', JSON.stringify(state.transactions));
         localStorage.setItem('budget', JSON.stringify(state.budget));
-    }, [state.transactions, state.budget]);
+        localStorage.setItem('actualExpenses', JSON.stringify(state.actualExpenses));
+    }, [state.transactions, state.budget, state.actualExpenses]);
 
     // Listen for auth changes and update user state
     useEffect(() => {
@@ -73,6 +95,32 @@ export const GlobalProvider = ({ children }) => {
     // Actions
     const addTransaction = (transaction) => {
         dispatch({ type: 'ADD_TRANSACTION', payload: transaction });
+
+        // Update expenses by category if it's an expense
+        if (transaction.type === 'expense') {
+            dispatch({
+                type: 'UPDATE_EXPENSE_BY_CATEGORY',
+                payload: { category: transaction.category, amount: transaction.amount }
+            });
+
+            // Update actual expenses
+            dispatch({
+                type: 'UPDATE_ACTUAL_EXPENSES',
+                payload: { category: transaction.category, amount: transaction.amount }
+            });
+        }
+
+        // Update total income if it's an income transaction
+        if (transaction.type === 'income') {
+            dispatch({
+                type: 'UPDATE_TOTAL_INCOME',
+                payload: transaction.amount
+            });
+        }
+    };
+
+    const deleteTransaction = (id) => {
+        dispatch({ type: 'DELETE_TRANSACTION', payload: id });
     };
 
     const setBudgetGoal = (category, goal) => {
@@ -91,6 +139,7 @@ export const GlobalProvider = ({ children }) => {
                 budget: state.budget,
                 user: state.user,
                 addTransaction,
+                deleteTransaction,
                 setBudgetGoal,
                 logout,
             }}

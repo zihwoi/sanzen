@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { GlobalContext } from '../context/GlobalState';
 
 // Colors for the pie chart slices
-const COLORS = ['#F33A6A', '#800080','#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF'];
+const COLORS = ['#F33A6A', '#800080', '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF'];
 
-const MonthlyExpensesBreakdown = ({ data }) => {
+const MonthlyExpensesBreakdown = () => {
+  const { budget } = useContext(GlobalContext);
+
+  // Check if budget.expensesByCategory is defined and not null
+  if (!budget || !budget.expensesByCategory) {
+    return <div>Loading...</div>;
+  }
+
+  const data = Object.entries(budget.expensesByCategory).map(([category, amount]) => ({
+    category,
+    amount
+  }));
+
   return (
     <ResponsiveContainer width="100%" height={400}>
       <PieChart>

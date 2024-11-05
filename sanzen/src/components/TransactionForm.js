@@ -1,8 +1,7 @@
 import React, { useState, useContext } from 'react';
-import styled from 'styled-components'; // Using styled-components for styling
-import { GlobalContext } from '../context/GlobalState'; // Import the global context
+import styled from 'styled-components';
+import { GlobalContext } from '../context/GlobalState';
 
-// Styled-components for the form styling
 const FormContainer = styled.form`
   background-color: #f3fdf3;
   border: 1px solid #4caf50;
@@ -10,7 +9,7 @@ const FormContainer = styled.form`
   padding: 20px;
   margin: 20px 0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 800px;  /* Make the form wider for horizontal layout */
+  max-width: 800px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -22,16 +21,15 @@ const FormTitle = styled.h3`
   font-size: 1.4em;
 `;
 
-// Horizontal layout for input fields
 const InputRow = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-between;  /* Align fields horizontally */
-  margin-bottom: 20px;  /* Add spacing between row and button */
+  justify-content: space-between;
+  margin-bottom: 20px;
 `;
 
 const InputField = styled.input`
-  width: 30%;  /* Make each input field occupy 30% of the width */
+  width: 30%;
   padding: 10px;
   border: 2px solid #ddd;
   border-radius: 5px;
@@ -44,7 +42,6 @@ const InputField = styled.input`
   }
 `;
 
-// Styled select dropdown for category
 const SelectField = styled.select`
   width: 30%;
   padding: 10px;
@@ -59,7 +56,7 @@ const SelectField = styled.select`
 `;
 
 const SubmitButton = styled.button`
-  width: 50%;  /* Make the button take half the width of the form */
+  width: 50%;
   padding: 12px;
   background-color: #4caf50;
   color: white;
@@ -75,48 +72,42 @@ const SubmitButton = styled.button`
   }
 `;
 
-const IncomeForm = () => {
-  const { addTransaction } = useContext(GlobalContext); // We will use a generic addTransaction function
+const TransactionForm = () => {
+  const { addTransaction } = useContext(GlobalContext);
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState('Income'); // New state for category
-  const [successMessage, setSuccessMessage] = useState(''); // Add successMessage state here
-  
+  const [category, setCategory] = useState('Income');
+  const [successMessage, setSuccessMessage] = useState('');
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    //prevent negative values
     if (parseFloat(amount) <= 0) {
       alert("Please enter a positive amount.");
       return;
-  }
+    }
 
-    // Add the transaction (either Income or Expense) through the global state action
     const newTransaction = {
       description,
-      amount: parseFloat(amount), // Ensure amount is a float
-      type: category === 'Income' ? 'income' : 'expense', // Set type based on category
+      amount: parseFloat(amount),
+      type: category === 'Income' ? 'income' : 'expense',
     };
 
-    
-    addTransaction(newTransaction); // Add transaction to global state
-    
-    setSuccessMessage("Transaction added successfully!"); // Set success message
+    addTransaction(newTransaction);
+    setSuccessMessage("Transaction added successfully!");
 
-    // Clear the form
     setDescription('');
     setAmount('');
     setCategory('Income');
-    setTimeout(() => setSuccessMessage(''), 3000); // Hide message after 3 seconds
+    setTimeout(() => setSuccessMessage(''), 3000);
   };
 
   return (
     <FormContainer onSubmit={handleSubmit}>
-      <FormTitle>Add Transaction</FormTitle> {/* Updated title for clarity */}
+      <FormTitle>Add Transaction</FormTitle>
 
-      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>} {/* Display success message */}
+      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
 
-      {/* Align fields horizontally */}
       <InputRow>
         <InputField
           type="text"
@@ -132,7 +123,6 @@ const IncomeForm = () => {
           onChange={(e) => setAmount(e.target.value)}
           required
         />
-
         <SelectField
           value={category}
           onChange={(e) => setCategory(e.target.value)}
@@ -142,9 +132,9 @@ const IncomeForm = () => {
           <option value="Expense">Expense</option>
         </SelectField>
       </InputRow>
-      <SubmitButton type="submit">Add Entry</SubmitButton>
+      <SubmitButton type="submit">Add Transaction</SubmitButton>
     </FormContainer>
   );
 };
 
-export default IncomeForm;
+export default TransactionForm;

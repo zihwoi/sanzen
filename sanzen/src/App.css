@@ -1,4 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+@font-face {
+  font-family: 'Figtree';
+  src: url('./fonts/Figtree-Regular.ttf') format('truetype'); /* Path to the regular font */
+  font-weight: normal; /* Normal weight */
+  font-style: normal; /* Normal style */
+}
+
+@font-face {
+  font-family: 'Figtree';
+  src: url('./fonts/Figtree-Bold.ttf') format('truetype'); /* Path to the bold font */
+  font-weight: bold; /* Bold weight */
+  font-style: normal; /* Normal style */
+}
 
 /* Global Styles */
 *,
@@ -10,6 +22,18 @@
 body {
   margin: 0; /* Remove default margin */
   font-family: 'Figtree', sans-serif; /* Apply Figtree font to body */
+}
+
+/* Regular text */
+.regular-text {
+  font-family: 'Figtree', sans-serif;
+  font-weight: normal; /* Uses the regular font */
+}
+
+/* Bold text */
+.bold-text {
+  font-family: 'Figtree', sans-serif;
+  font-weight: bold; /* Uses the bold font */
 }
 
 
@@ -40,7 +64,7 @@ body {
 .nav a {
   text-decoration: none;
   color: rgb(0, 0, 0); /* Change to white for better contrast */
-  font-weight: 500;
+  font-weight: 400;
   padding: 10px 15px; /* Ensure links have enough padding */
   border-radius: 5px; /* Slight rounding for aesthetic */
   transition: background-color 0.3s ease; /* Smooth background transition */

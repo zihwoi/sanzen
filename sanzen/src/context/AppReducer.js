@@ -5,10 +5,31 @@ const AppReducer = (state, action) => {
                 ...state,
                 transactions: [...state.transactions, action.payload],
             };
-        case 'UPDATE_BUDGET':
-            const { type, amount } = action.payload;
-            const updatedIncome = type === 'income' ? state.budget.totalIncome + amount : state.budget.totalIncome;
-            const updatedExpenses = type === 'expense' ? state.budget.totalExpenses + amount : state.budget.totalExpenses;
+
+        case 'UPDATE_EXPENSE_BY_CATEGORY': {
+            // Destructure action.payload with unique names to avoid conflicts
+            const { category, amount } = action.payload;
+            return {
+                ...state,
+                budget: {
+                    ...state.budget,
+                    expensesByCategory: {
+                        ...state.budget.expensesByCategory,
+                        [category]: (state.budget.expensesByCategory[category] || 0) + amount,
+                    },
+                },
+            };
+        }
+
+        case 'UPDATE_BUDGET': {
+            // Distinct variable names to avoid redeclaration issues
+            const { transactionType, amount: transactionAmount } = action.payload;
+            const updatedIncome = transactionType === 'income'
+                ? state.budget.totalIncome + transactionAmount
+                : state.budget.totalIncome;
+            const updatedExpenses = transactionType === 'expense'
+                ? state.budget.totalExpenses + transactionAmount
+                : state.budget.totalExpenses;
 
             return {
                 ...state,
@@ -18,6 +39,8 @@ const AppReducer = (state, action) => {
                     totalExpenses: updatedExpenses,
                 },
             };
+        }
+
         case 'SET_BUDGET_GOAL':
             return {
                 ...state,
@@ -26,6 +49,16 @@ const AppReducer = (state, action) => {
                     budgetGoal: action.payload,
                 },
             };
+
+        case 'UPDATE_TOTAL_INCOME':
+            return {
+                ...state,
+                budget: {
+                    ...state.budget,
+                    totalIncome: state.budget.totalIncome + action.payload,
+                },
+            };
+
         default:
             return state;
     }

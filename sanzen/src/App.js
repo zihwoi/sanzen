@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Dashboard from './components/Dashboard';
-import AddTransaction from './pages/AddTransaction';
+import TransactionList from './pages/TransactionList';
 import { GlobalProvider } from './context/GlobalState';
 import BudgetOverview from './components/BudgetOverview';
 import NotFound from './pages/NotFound';
@@ -96,7 +96,7 @@ const AppContent = () => {
             path="/add-transaction"
             element={
               <ProtectedRoute>
-                <AddTransaction />
+                <TransactionList />
               </ProtectedRoute>
             }
           />
